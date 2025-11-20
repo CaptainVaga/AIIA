@@ -128,6 +128,166 @@ class SolarSystemApp {
         // Start UI update loop
         this.updateUI();
         setInterval(() => this.updateUI(), 1000); // Update every second
+
+        // Setup object interaction (double-click)
+        this.setupObjectInteraction();
+    }
+
+    /**
+     * Setup object interaction (clicking on celestial bodies)
+     */
+    setupObjectInteraction() {
+        const canvas = document.getElementById('solar-system-canvas');
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        let lastClickTime = 0;
+        const doubleClickDelay = 300; // ms
+
+        canvas.addEventListener('click', (event) => {
+            const currentTime = Date.now();
+            const timeSinceLastClick = currentTime - lastClickTime;
+
+            // Calculate mouse position in normalized device coordinates
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+            // Update the raycaster
+            raycaster.setFromCamera(mouse, this.solarSystem.camera);
+
+            // Get all celestial object meshes
+            const celestialMeshes = Object.entries(this.solarSystem.celestialObjects)
+                .map(([name, obj]) => ({ mesh: obj.mesh, name: name }));
+
+            // Check for intersections
+            const intersects = raycaster.intersectObjects(
+                celestialMeshes.map(obj => obj.mesh)
+            );
+
+            if (intersects.length > 0) {
+                const clickedObject = celestialMeshes.find(
+                    obj => obj.mesh === intersects[0].object
+                );
+
+                if (clickedObject) {
+                    // Single click - show info
+                    this.showObjectInfo(clickedObject.name);
+
+                    // Double click detection
+                    if (timeSinceLastClick < doubleClickDelay) {
+                        this.onDoubleClickObject(clickedObject.name);
+                    }
+                }
+            } else {
+                // Clicked on empty space - hide info
+                this.hideObjectInfo();
+            }
+
+            lastClickTime = currentTime;
+        });
+    }
+
+    /**
+     * Handle double-click on celestial object
+     */
+    onDoubleClickObject(objectName) {
+        console.log(`🎯 Double-clicked on ${objectName}`);
+
+        switch (objectName) {
+            case 'earth':
+                // Zoom to Earth close-up view
+                this.solarSystem.setCameraView('earth');
+                this.showNotification(`🌍 Zooming to Earth - Detailed View`);
+                break;
+
+            case 'moon':
+                // Zoom to Moon
+                this.zoomToObject('moon');
+                this.showNotification(`🌙 Zooming to Moon`);
+                break;
+
+            case 'sun':
+                // Zoom to Sun
+                this.zoomToObject('sun');
+                this.showNotification(`☀️ Zooming to Sun`);
+                break;
+
+            default:
+                // Zoom to any other planet
+                this.zoomToObject(objectName);
+                this.showNotification(`Zooming to ${objectName.charAt(0).toUpperCase() + objectName.slice(1)}`);
+                break;
+        }
+    }
+
+    /**
+     * Zoom camera to specific object
+     */
+    zoomToObject(objectName) {
+        const obj = this.solarSystem.getCelestialObject(objectName);
+        if (!obj) return;
+
+        const position = obj.mesh.position;
+        const size = obj.mesh.geometry.parameters.radius;
+
+        // Calculate camera position (5x the object size away)
+        const distance = size * 5;
+
+        this.solarSystem.camera.position.set(
+            position.x + distance,
+            position.y + distance * 0.5,
+            position.z + distance
+        );
+
+        this.solarSystem.controls.target.copy(position);
+        this.solarSystem.controls.update();
+    }
+
+    /**
+     * Show information about clicked object
+     */
+    showObjectInfo(objectName) {
+        const infoOverlay = document.getElementById('info-overlay');
+        const infoContent = document.getElementById('selected-object-info');
+
+        const obj = this.solarSystem.getCelestialObject(objectName);
+        if (!obj) return;
+
+        const data = obj.data;
+        let info = `<h3>${objectName.charAt(0).toUpperCase() + objectName.slice(1)}</h3>`;
+
+        if (data.radius) {
+            info += `<div><strong>Radius:</strong> ${data.radius.toLocaleString()} km</div>`;
+        }
+
+        if (data.distance) {
+            info += `<div><strong>Distance:</strong> ${data.distance.toLocaleString()} km</div>`;
+        }
+
+        if (data.orbitalPeriod) {
+            info += `<div><strong>Orbital Period:</strong> ${data.orbitalPeriod.toFixed(1)} days</div>`;
+        }
+
+        if (objectName === 'earth') {
+            const moonData = this.apiHandler.getData('moonPhase');
+            if (moonData) {
+                info += `<div style="margin-top: 10px;"><strong>Moon Phase:</strong> ${moonData.phaseName}</div>`;
+            }
+        }
+
+        info += `<div style="margin-top: 10px; font-size: 0.85em; color: #03a9f4;">💡 Double-click to zoom in</div>`;
+
+        infoContent.innerHTML = info;
+        infoOverlay.classList.add('visible');
+    }
+
+    /**
+     * Hide object info overlay
+     */
+    hideObjectInfo() {
+        const infoOverlay = document.getElementById('info-overlay');
+        infoOverlay.classList.remove('visible');
     }
 
     /**
