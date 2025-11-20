@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time 3D Solar System - AIIA OmniOrO</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <h1>🌍 AIIA Solar System</h1>
+            <div class="loading-spinner"></div>
+            <p>Loading celestial data...</p>
+            <p class="ethics-notice">Operating under Omniplex Ethics & Alignment</p>
+        </div>
+    </div>
+
+    <!-- Main Canvas -->
+    <canvas id="solar-system-canvas"></canvas>
+
+    <!-- Control Panel -->
+    <div id="control-panel" class="panel">
+        <button id="toggle-panel" class="toggle-btn">☰</button>
+        <div id="panel-content">
+            <h2>🌌 Real-Time Solar System</h2>
+
+            <!-- Time Display -->
+            <div class="section">
+                <h3>⏰ Current Time</h3>
+                <div id="current-time"></div>
+            </div>
+
+            <!-- Moon Info -->
+            <div class="section">
+                <h3>🌙 Moon Status</h3>
+                <div id="moon-phase"></div>
+                <div id="moon-illumination"></div>
+                <div id="moon-distance"></div>
+                <div id="moon-position"></div>
+            </div>
+
+            <!-- Tidal Info -->
+            <div class="section">
+                <h3>🌊 Tidal Effects</h3>
+                <div id="tidal-force"></div>
+                <div id="next-tide"></div>
+            </div>
+
+            <!-- Earth Info -->
+            <div class="section">
+                <h3>🌍 Earth Status</h3>
+                <div id="earth-rotation"></div>
+                <div id="earth-tilt"></div>
+            </div>
+
+            <!-- View Controls -->
+            <div class="section">
+                <h3>🎮 View Controls</h3>
+                <button id="view-system" class="control-btn">Full System</button>
+                <button id="view-earth-moon" class="control-btn">Earth-Moon</button>
+                <button id="view-earth" class="control-btn">Earth Close-up</button>
+                <button id="toggle-scale" class="control-btn">Toggle Scale Mode</button>
+                <button id="toggle-labels" class="control-btn">Toggle Labels</button>
+            </div>
+
+            <!-- Speed Controls -->
+            <div class="section">
+                <h3>⏱️ Time Speed</h3>
+                <div class="speed-controls">
+                    <button class="speed-btn" data-speed="1">1x</button>
+                    <button class="speed-btn" data-speed="10">10x</button>
+                    <button class="speed-btn" data-speed="100">100x</button>
+                    <button class="speed-btn" data-speed="1000">1000x</button>
+                </div>
+            </div>
+
+            <!-- Data Sources -->
+            <div class="section">
+                <h3>📡 Data Sources</h3>
+                <div id="api-status">
+                    <div class="status-item">
+                        <span>Astronomy API:</span>
+                        <span id="astronomy-status" class="status-indicator">⚪</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Weather API:</span>
+                        <span id="weather-status" class="status-indicator">⚪</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Tidal API:</span>
+                        <span id="tidal-status" class="status-indicator">⚪</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Overlay -->
+    <div id="info-overlay">
+        <div id="selected-object-info"></div>
+    </div>
+
+    <!-- Fullscreen Button -->
+    <button id="fullscreen-btn" class="floating-btn">⛶</button>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="config.js"></script>
+    <script src="api-handler.js"></script>
+    <script src="celestial-mechanics.js"></script>
+    <script src="solar-system.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

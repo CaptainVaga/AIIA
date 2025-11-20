@@ -1,0 +1,301 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    background: #000;
+    color: #fff;
+}
+
+/* Canvas */
+#solar-system-canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Loading Screen */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #000428 0%, #004e92 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+
+#loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+.loading-content h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+    background: linear-gradient(45deg, #4fc3f7, #29b6f6, #03a9f4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid #03a9f4;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.ethics-notice {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #4fc3f7;
+    font-style: italic;
+}
+
+/* Control Panel */
+#control-panel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    max-width: 350px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+#control-panel.collapsed {
+    transform: translateX(calc(100% + 20px));
+}
+
+.toggle-btn {
+    position: absolute;
+    top: 10px;
+    left: -40px;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px 0 0 8px;
+    color: #fff;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.toggle-btn:hover {
+    background: rgba(3, 169, 244, 0.3);
+}
+
+#control-panel h2 {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    background: linear-gradient(45deg, #4fc3f7, #03a9f4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+#control-panel h3 {
+    color: #4fc3f7;
+    font-size: 1em;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.section > div {
+    margin: 8px 0;
+    font-size: 0.9em;
+    color: #b0bec5;
+}
+
+/* Buttons */
+.control-btn, .speed-btn {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    background: rgba(3, 169, 244, 0.2);
+    border: 1px solid rgba(3, 169, 244, 0.5);
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
+
+.control-btn:hover, .speed-btn:hover {
+    background: rgba(3, 169, 244, 0.4);
+    border-color: #03a9f4;
+    transform: translateY(-2px);
+}
+
+.control-btn:active, .speed-btn:active {
+    transform: translateY(0);
+}
+
+.speed-controls {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+}
+
+.speed-btn {
+    padding: 8px;
+    margin: 0;
+}
+
+.speed-btn.active {
+    background: rgba(3, 169, 244, 0.6);
+    border-color: #03a9f4;
+}
+
+/* Status Indicators */
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+}
+
+.status-indicator {
+    font-size: 1.2em;
+}
+
+.status-indicator.connected {
+    color: #4caf50;
+}
+
+.status-indicator.error {
+    color: #f44336;
+}
+
+/* Info Overlay */
+#info-overlay {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px 20px;
+    min-width: 250px;
+    display: none;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+#info-overlay.visible {
+    display: block;
+}
+
+/* Fullscreen Button */
+.floating-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.floating-btn:hover {
+    background: rgba(3, 169, 244, 0.3);
+    border-color: #03a9f4;
+    transform: scale(1.1);
+}
+
+/* Scrollbar */
+#control-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+#control-panel::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+#control-panel::-webkit-scrollbar-thumb {
+    background: rgba(3, 169, 244, 0.3);
+    border-radius: 4px;
+}
+
+#control-panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(3, 169, 244, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #control-panel {
+        max-width: calc(100vw - 40px);
+        top: 10px;
+        right: 10px;
+    }
+
+    #info-overlay {
+        left: 10px;
+        bottom: 80px;
+        min-width: 200px;
+    }
+}
+
+/* Value highlighting */
+.value-highlight {
+    color: #03a9f4;
+    font-weight: bold;
+}
+
+.label-positive {
+    color: #4caf50;
+}
+
+.label-negative {
+    color: #f44336;
+}
+
+.label-warning {
+    color: #ff9800;
+}
