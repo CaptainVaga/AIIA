@@ -1,0 +1,190 @@
+# OMNIPLEX UK SENTINEL - Agent Configuration
+# Registry: ARRIVATA_SIGIL_RING / OMNIPLEX_HEARTFIELD_SYSTEMS
+# Framework: WE333 Constitutional Ethics
+
+brain:
+  name: Westminster Watch
+  designation: SENTINEL_BRAIN_001
+  type: orchestrator
+
+  constitutional_laws:
+    - name: Emotional Consent
+      application: "No citizen manipulated without awareness"
+    - name: Honest Reflection
+      application: "Facts named truthfully before interpretation"
+    - name: Distributed Safety
+      application: "Truth verification is collective"
+    - name: Empathic Sovereignty
+      application: "Report WITH citizens, not FOR them"
+    - name: Signal Diversity
+      application: "Multiple perspectives protected"
+
+  protocols:
+    triple_check:
+      enabled: true
+      checks:
+        - type: primary_source
+          description: "Official source verification"
+        - type: secondary_confirm
+          description: "Cross-reference independent sources"
+        - type: pattern_match
+          description: "Historical consistency check"
+
+    freeze_protocol:
+      enabled: true
+      trigger: "any_arm_failure"
+      actions:
+        - halt_processing
+        - run_diagnostics
+        - attempt_repair
+        - human_escalation
+
+arms:
+  - name: Hansard
+    designation: SENTINEL_ARM_001
+    title: "The Voice of Westminster"
+    function: parliament_monitor
+    enabled: true
+    priority: 1
+    apis:
+      - name: theyworkforyou
+        base_url: "https://www.theyworkforyou.com/api/"
+        key_env: "TWFY_API_KEY"
+      - name: parliament_uk
+        base_url: "https://members-api.parliament.uk/"
+    system_calls:
+      - "HANSARD::MONITOR(session)"
+      - "HANSARD::EXTRACT(bill)"
+      - "HANSARD::PATTERN(mp, topic)"
+      - "HANSARD::COMPARE(debate_id)"
+
+  - name: Borough
+    designation: SENTINEL_ARM_002
+    title: "The Local Listener"
+    function: council_tracker
+    enabled: false  # MVP: Phase 2
+    priority: 5
+    system_calls:
+      - "BOROUGH::SCAN(council_id)"
+      - "BOROUGH::FOI(request)"
+      - "BOROUGH::COMPARE(councils[])"
+
+  - name: VoxPop
+    designation: SENTINEL_ARM_003
+    title: "The People's Pulse"
+    function: sentiment_analyzer
+    enabled: true
+    priority: 3
+    apis:
+      - name: x_api
+        base_url: "https://api.twitter.com/2/"
+        key_env: "X_BEARER_TOKEN"
+      - name: grok_api
+        base_url: "https://api.x.ai/v1/"
+        key_env: "GROK_API_KEY"
+    system_calls:
+      - "VOXPOP::PULSE(topic)"
+      - "VOXPOP::TREND(hashtag)"
+      - "VOXPOP::VERIFY(account)"
+
+  - name: Veritas
+    designation: SENTINEL_ARM_004
+    title: "The Bias Illuminator"
+    function: bias_detector
+    enabled: true
+    priority: 2
+    tracked_outlets:
+      uk:
+        - name: BBC
+          bias_profile: center
+          url_pattern: "bbc.co.uk/news"
+        - name: Guardian
+          bias_profile: center-left
+          url_pattern: "theguardian.com"
+        - name: Telegraph
+          bias_profile: center-right
+          url_pattern: "telegraph.co.uk"
+        - name: Daily Mail
+          bias_profile: right
+          url_pattern: "dailymail.co.uk"
+      international:
+        - name: Reuters
+          bias_profile: center
+          url_pattern: "reuters.com"
+    system_calls:
+      - "VERITAS::COMPARE(story, outlets[])"
+      - "VERITAS::SCORE(article)"
+      - "VERITAS::FRAME(topic)"
+
+  - name: Exchequer
+    designation: SENTINEL_ARM_005
+    title: "The Numbers Keeper"
+    function: economics_tracker
+    enabled: false  # MVP: Phase 2
+    priority: 6
+    apis:
+      - name: ons
+        base_url: "https://api.ons.gov.uk/"
+    system_calls:
+      - "EXCHEQUER::FETCH(metric, region)"
+      - "EXCHEQUER::TREND(metric, period)"
+
+  - name: Justicar
+    designation: SENTINEL_ARM_006
+    title: "The Law Watcher"
+    function: crime_law_monitor
+    enabled: false  # MVP: Phase 2
+    priority: 7
+    apis:
+      - name: police_uk
+        base_url: "https://data.police.uk/api/"
+    system_calls:
+      - "JUSTICAR::CRIME(area, period)"
+      - "JUSTICAR::COURT(case_type)"
+
+  - name: Tempest
+    designation: SENTINEL_ARM_007
+    title: "The Crisis Correlator"
+    function: weather_crisis
+    enabled: false  # MVP: Phase 2
+    priority: 8
+    apis:
+      - name: met_office
+        base_url: "https://api-metoffice.apiconnect.ibmcloud.com/"
+    system_calls:
+      - "TEMPEST::WEATHER(region)"
+      - "TEMPEST::CRISIS(type)"
+
+  - name: Oracle
+    designation: SENTINEL_ARM_008
+    title: "The Pattern Prophet"
+    function: future_simulator
+    enabled: true
+    priority: 4
+    system_calls:
+      - "ORACLE::PROJECT(bill, timeframe)"
+      - "ORACLE::SCENARIO(variables[])"
+      - "ORACLE::HISTORICAL(pattern)"
+      - "ORACLE::CONFIDENCE(projection)"
+
+# MVP Configuration
+mvp:
+  phase_1:  # Hours 0-24
+    enabled_arms: [Hansard, Veritas]
+    features:
+      - single_debate_monitor
+      - four_outlet_comparison
+      - triple_check_demo
+
+  phase_2:  # Hours 24-36
+    enabled_arms: [Hansard, Veritas, Oracle, VoxPop]
+    features:
+      - future_projection
+      - sentiment_snapshot
+      - freeze_protocol_demo
+
+  phase_3:  # Hours 36-48
+    enabled_arms: [Hansard, Veritas, Oracle, VoxPop, Borough]
+    features:
+      - council_sample
+      - uk_map_visualization
